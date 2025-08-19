@@ -1,0 +1,50 @@
+# 全局异常处理器配置示例
+exception:
+  handler:
+    # 是否启用全局异常处理器
+    enabled: true
+    
+    # 是否启用异常日志记录
+    enable-logging: true
+    
+    # 是否在响应中包含异常堆栈信息（生产环境建议设为false）
+    include-stack-trace: false
+    
+    # 异常堆栈信息最大行数
+    max-stack-trace-lines: 50
+    
+    # 是否启用字段验证错误详情
+    include-field-errors: true
+    
+    # 异常日志级别配置
+    log-level:
+      # 业务异常日志级别
+      business: WARN
+      # 系统异常日志级别  
+      system: ERROR
+      # 参数校验异常日志级别
+      validation: WARN
+
+# 开发环境配置示例
+---
+spring:
+  profiles: dev
+  
+exception:
+  handler:
+    # 开发环境可以显示堆栈信息便于调试
+    include-stack-trace: true
+    # 开发环境可以显示更多堆栈信息
+    max-stack-trace-lines: 100
+
+# 生产环境配置示例  
+---
+spring:
+  profiles: prod
+  
+exception:
+  handler:
+    # 生产环境不显示堆栈信息，保护系统安全
+    include-stack-trace: false
+    # 生产环境可以关闭详细的字段错误信息
+    include-field-errors: false

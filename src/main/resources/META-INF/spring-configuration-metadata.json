@@ -1,0 +1,75 @@
+{
+  "groups": [
+    {
+      "name": "exception.handler",
+      "type": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "全局异常处理器配置属性"
+    },
+    {
+      "name": "exception.handler.log-level",
+      "type": "com.example.exception.starter.properties.ExceptionHandlerProperties$LogLevel",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "sourceMethod": "getLogLevel()",
+      "description": "异常日志级别配置"
+    }
+  ],
+  "properties": [
+    {
+      "name": "exception.handler.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "是否启用全局异常处理器",
+      "defaultValue": true
+    },
+    {
+      "name": "exception.handler.enable-logging",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "是否启用异常日志记录",
+      "defaultValue": true
+    },
+    {
+      "name": "exception.handler.include-stack-trace",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "是否在响应中包含异常堆栈信息",
+      "defaultValue": false
+    },
+    {
+      "name": "exception.handler.max-stack-trace-lines",
+      "type": "java.lang.Integer",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "异常堆栈信息最大行数",
+      "defaultValue": 50
+    },
+    {
+      "name": "exception.handler.include-field-errors",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties",
+      "description": "是否启用字段验证错误详情",
+      "defaultValue": true
+    },
+    {
+      "name": "exception.handler.log-level.business",
+      "type": "java.lang.String",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties$LogLevel",
+      "description": "业务异常日志级别",
+      "defaultValue": "WARN"
+    },
+    {
+      "name": "exception.handler.log-level.system",
+      "type": "java.lang.String",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties$LogLevel",
+      "description": "系统异常日志级别",
+      "defaultValue": "ERROR"
+    },
+    {
+      "name": "exception.handler.log-level.validation",
+      "type": "java.lang.String",
+      "sourceType": "com.example.exception.starter.properties.ExceptionHandlerProperties$LogLevel",
+      "description": "参数校验异常日志级别",
+      "defaultValue": "WARN"
+    }
+  ]
+}
