@@ -13,6 +13,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * 全局异常处理器自动配置类
+ * @author MyAcme
  */
 @Configuration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
