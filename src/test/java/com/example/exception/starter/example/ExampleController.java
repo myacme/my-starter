@@ -3,11 +3,11 @@ package com.example.exception.starter.example;
 import com.example.exception.starter.enums.ErrorCode;
 import com.example.exception.starter.exception.BusinessException;
 import com.example.exception.starter.exception.ValidationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * 异常处理示例控制器
