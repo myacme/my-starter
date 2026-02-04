@@ -1,19 +1,50 @@
-# 全局异常处理 Spring Boot Starter
+# Spring Boot 全局异常处理 Starter
 
-这是一个用于Spring Boot应用程序的全局异常处理starter，提供统一的异常处理机制和标准化的错误响应格式。
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.4-green.svg)]()
+[![Java](https://img.shields.io/badge/Java-8%2B-orange.svg)]()
 
-## 功能特性
+一个功能完善的Spring Boot异常处理starter，提供统一的异常处理机制、标准化的错误响应格式和灵活的配置选项。
 
-- 🚀 **开箱即用**：引入依赖即可自动启用全局异常处理
-- 🎯 **统一响应格式**：标准化的错误响应结构
-- 🔧 **灵活配置**：支持多种配置选项，满足不同需求
-- 📝 **详细日志**：自动记录异常日志，便于问题排查
-- 🛡️ **全面覆盖**：处理常见的Web异常类型
-- 🎨 **自定义异常**：提供基础异常类，方便业务扩展
+## 📦 项目简介
 
-## 快速开始
+该starter旨在简化Spring Boot应用中的异常处理，提供开箱即用的全局异常处理能力，包含：
 
-### 1. 添加依赖
+- **自动化配置**：零配置启动，自动注册全局异常处理器
+- **统一响应格式**：标准化的JSON错误响应结构
+- **丰富的异常类型**：内置业务异常、校验异常等多种异常类型
+- **灵活配置**：支持详细的配置选项控制异常处理行为
+- **全面的日志记录**：自动记录异常信息便于问题排查
+- **多环境适配**：开发/生产环境差异化配置支持
+
+## 🚀 核心特性
+
+### 🔧 主要功能
+- ✅ **自动配置**：基于Spring Boot自动配置机制，引入即用
+- ✅ **统一响应**：标准化的错误响应格式，包含错误码、消息、时间戳等
+- ✅ **异常分类**：支持业务异常、系统异常、校验异常等多种类型
+- ✅ **详细配置**：可配置日志级别、堆栈信息、字段错误详情等
+- ✅ **环境适配**：支持不同环境的差异化配置
+- ✅ **安全考虑**：生产环境自动隐藏敏感信息
+
+### 🏗️ 架构组成
+
+#### 异常体系
+- `BaseException`：基础异常类，所有自定义异常的父类
+- `BusinessException`：业务异常，用于处理业务逻辑错误
+- `ValidationException`：参数校验异常
+
+#### 核心组件
+- `GlobalExceptionHandler`：全局异常处理器，处理各种异常类型
+- `ErrorResponse`：统一错误响应模型
+- `ErrorCode`：预定义错误码枚举
+- `ExceptionHandlerProperties`：配置属性类
+
+## 📦 快速开始
+
+### 1. Maven依赖
+
+在你的 `pom.xml` 中添加依赖：
 
 ```xml
 <dependency>
@@ -23,167 +54,328 @@
 </dependency>
 ```
 
-### 2. 配置属性（可选）
+### 2. Gradle依赖
 
-在 `application.yml` 中配置：
+```gradle
+implementation 'com.example:global-exception-handler-starter:1.0.0'
+```
+
+### 3. 启用自动配置
+
+在Spring Boot主启动类上添加注解（Spring Boot 2.7+通常自动配置）：
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+## ⚙️ 配置选项
+
+### 基础配置
 
 ```yaml
 exception:
   handler:
-    enabled: true                    # 是否启用全局异常处理器，默认true
-    enable-logging: true             # 是否启用异常日志记录，默认true
-    include-stack-trace: false       # 是否在响应中包含异常堆栈信息，默认false
-    max-stack-trace-lines: 50        # 异常堆栈信息最大行数，默认50
-    include-field-errors: true       # 是否启用字段验证错误详情，默认true
+    # 是否启用全局异常处理器
+    enabled: true
+    # 是否启用异常日志记录
+    enable-logging: true
+    # 是否在响应中包含异常堆栈信息
+    include-stack-trace: false
+    # 异常堆栈信息最大行数
+    max-stack-trace-lines: 50
+    # 是否启用字段验证错误详情
+    include-field-errors: true
+```
+
+### 环境差异化配置
+
+**开发环境** (`application-dev.yml`)：
+```yaml
+exception:
+  handler:
+    # 开发环境显示堆栈信息便于调试
+    include-stack-trace: true
+    # 显示更多堆栈信息
+    max-stack-trace-lines: 100
+```
+
+**生产环境** (`application-prod.yml`)：
+```yaml
+exception:
+  handler:
+    # 生产环境隐藏堆栈信息保护安全
+    include-stack-trace: false
+    # 简化字段错误信息
+    include-field-errors: false
+```
+
+### 日志级别配置
+
+```yaml
+exception:
+  handler:
     log-level:
-      business: WARN                 # 业务异常日志级别，默认WARN
-      system: ERROR                  # 系统异常日志级别，默认ERROR
-      validation: WARN               # 参数校验异常日志级别，默认WARN
+      # 业务异常日志级别
+      business: WARN
+      # 系统异常日志级别  
+      system: ERROR
+      # 参数校验异常日志级别
+      validation: WARN
 ```
 
-### 3. 使用示例
+## 💡 使用示例
 
-#### 抛出业务异常
+### 1. 抛出业务异常
 
 ```java
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
     
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
-        User user = userService.findById(id);
-        if (user == null) {
-            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "用户不存在");
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, 
+                "用户不存在", 
+                String.format("用户ID: %d", id));
         }
-        return user;
+        return userService.findById(id);
     }
-}
-```
-
-#### 参数校验
-
-```java
-@RestController
-public class UserController {
     
-    @PostMapping("/user")
-    public User createUser(@Valid @RequestBody UserRequest request) {
-        // 如果request中的字段不满足校验规则，会自动抛出MethodArgumentNotValidException
-        // 全局异常处理器会捕获并返回标准化的错误响应
+    @PostMapping
+    public User createUser(@Valid @RequestBody CreateUserRequest request) {
+        // 参数校验失败会自动抛出 ValidationException
+        if (userService.existsByUsername(request.getUsername())) {
+            throw new BusinessException(ErrorCode.RESOURCE_ALREADY_EXISTS, 
+                "用户名已存在");
+        }
         return userService.create(request);
     }
 }
+```
 
-public class UserRequest {
-    @NotBlank(message = "用户名不能为空")
-    private String username;
+### 2. 自定义错误码
+
+```java
+public enum CustomErrorCode implements ErrorCode {
+    // 用户相关错误
+    USER_ALREADY_EXISTS(2003, "用户已存在"),
+    USER_ACCOUNT_LOCKED(2004, "用户账户已被锁定"),
     
-    @Min(value = 1, message = "年龄必须大于0")
-    private Integer age;
+    // 订单相关错误
+    ORDER_NOT_FOUND(3001, "订单不存在"),
+    ORDER_STATUS_INVALID(3002, "订单状态不正确");
     
-    // getters and setters...
+    private final int code;
+    private final String message;
+    
+    CustomErrorCode(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+    
+    @Override
+    public int getCode() { return code; }
+    
+    @Override
+    public String getMessage() { return message; }
 }
 ```
 
-## 错误响应格式
+### 3. 使用自定义异常
 
-所有异常都会返回统一的JSON格式响应：
+```java
+// 基本业务异常
+throw new BusinessException(CustomErrorCode.USER_ALREADY_EXISTS);
+
+// 带详细信息的异常
+throw new BusinessException(
+    CustomErrorCode.ORDER_NOT_FOUND, 
+    "订单查询失败",
+    String.format("订单号: %s", orderNumber)
+);
+
+// 系统异常交给全局处理器处理
+throw new RuntimeException("系统内部错误");
+```
+
+## 📋 错误响应格式
+
+### 标准响应结构
 
 ```json
 {
-  "code": 2001,
-  "message": "用户不存在",
-  "path": "/api/user/123",
-  "timestamp": "2024-01-01 12:00:00",
-  "details": "详细错误信息（仅在开启堆栈跟踪时显示）",
-  "fieldErrors": [
-    {
-      "field": "username",
-      "rejectedValue": "",
-      "message": "用户名不能为空"
-    }
-  ]
+    "code": 2001,
+    "message": "资源不存在",
+    "details": "用户ID: 123",
+    "path": "/api/users/123",
+    "timestamp": "2024-01-01 12:00:00",
+    "fieldErrors": [
+        {
+            "field": "username",
+            "rejectedValue": "",
+            "message": "用户名不能为空"
+        }
+    ]
 }
 ```
 
-## 支持的异常类型
+### 字段说明
 
-### 业务异常
-- `BaseException` - 基础异常类
-- `BusinessException` - 业务异常
-- `ValidationException` - 数据校验异常
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `code` | Integer | 错误码 |
+| `message` | String | 错误消息 |
+| `details` | String | 详细信息（可选） |
+| `path` | String | 请求路径 |
+| `timestamp` | String | 时间戳 |
+| `fieldErrors` | Array | 字段验证错误详情（可选） |
 
-### Spring Web异常
-- `MethodArgumentNotValidException` - 参数校验失败
-- `BindException` - 参数绑定异常
-- `ConstraintViolationException` - 约束违反异常
-- `HttpRequestMethodNotSupportedException` - 请求方法不支持
-- `HttpMediaTypeNotSupportedException` - 媒体类型不支持
-- `MissingServletRequestParameterException` - 缺少请求参数
-- `TypeMismatchException` - 参数类型不匹配
-- `HttpMessageNotReadableException` - HTTP消息不可读
-- `MissingServletRequestPartException` - 缺少文件上传参数
-- `NoHandlerFoundException` - 404异常
-- `AsyncRequestTimeoutException` - 异步请求超时
-- `AccessDeniedException` - 访问拒绝
+## 🛠️ 项目结构
 
-### 系统异常
-- `Exception` - 所有未捕获的异常
+```
+src/main/java/com/example/exception/starter/
+├── autoconfigure/
+│   └── ExceptionHandlerAutoConfiguration.java  # 自动配置类
+├── enums/
+│   └── ErrorCode.java                          # 错误码枚举
+├── exception/
+│   ├── BaseException.java                      # 基础异常
+│   ├── BusinessException.java                  # 业务异常
+│   └── ValidationException.java                # 校验异常
+├── handler/
+│   └── GlobalExceptionHandler.java             # 全局异常处理器
+├── model/
+│   └── ErrorResponse.java                      # 错误响应模型
+└── properties/
+    └── ExceptionHandlerProperties.java         # 配置属性
+```
 
-## 错误码定义
+## 🧪 测试示例
 
-| 错误码范围 | 类型 | 说明 |
-|---------|------|------|
-| 0 | 成功 | 操作成功 |
-| 1000-1999 | 系统级别错误 | 参数错误、类型不匹配等 |
-| 2000-2999 | 业务级别错误 | 资源不存在、业务逻辑错误等 |
-| 3000-3999 | 权限相关错误 | 未授权、访问拒绝等 |
-| 4000-4999 | 外部服务错误 | 外部服务调用失败等 |
-
-## 自定义异常
-
-继承 `BaseException` 创建自定义异常：
+项目包含完整的测试控制器示例：
 
 ```java
-public class CustomException extends BaseException {
-    public CustomException(String message) {
-        super(ErrorCode.BUSINESS_ERROR, message);
+@RestController
+@RequestMapping("/api/example")
+public class ExampleController {
+    
+    @GetMapping("/business-error")
+    public String businessError() {
+        throw new BusinessException(ErrorCode.BUSINESS_ERROR, "测试业务异常");
     }
     
-    public CustomException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    @PostMapping("/validation")
+    public String testValidation(@Valid @RequestBody UserRequest request) {
+        return "验证通过";
+    }
+    
+    @GetMapping("/system-error")
+    public String systemError() {
+        throw new RuntimeException("测试系统异常");
     }
 }
 ```
 
-## 扩展错误码
+## 🎯 最佳实践
 
-在 `ErrorCode` 枚举中添加新的错误码：
+### 1. 异常使用建议
 
 ```java
-public enum ErrorCode {
-    // 现有错误码...
-    
-    // 自定义业务错误码
-    USER_NOT_FOUND(2100, "用户不存在"),
-    ORDER_NOT_FOUND(2101, "订单不存在");
-    
-    // 构造函数和方法...
+// ✅ 正确：业务逻辑异常使用 BusinessException
+if (user == null) {
+    throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
+}
+
+// ✅ 正确：让框架自动处理参数校验
+@Valid
+public void process(@NotNull @Min(1) Long userId) {
+    // ...
+}
+
+// ✅ 正确：系统异常让全局处理器处理
+try {
+    externalService.call();
+} catch (Exception e) {
+    log.error("外部服务调用失败", e);
+    throw e;
 }
 ```
 
-## 注意事项
+### 2. 错误码命名规范
 
-1. **生产环境安全**：生产环境建议设置 `include-stack-trace: false`，避免泄露敏感信息
-2. **日志级别**：根据实际需要调整不同类型异常的日志级别
-3. **异常处理顺序**：更具体的异常处理器会优先于通用的异常处理器
-4. **性能考虑**：异常处理会有一定的性能开销，不建议将异常作为正常的业务流程控制
+- 使用数字编码，按模块分类（如：1000-1999系统级，2000-2999业务级）
+- 语义明确，避免歧义
+- 保持一致性
 
-## 版本要求
+### 3. 日志记录建议
 
+```java
+// 在关键业务节点记录debug日志
+log.debug("开始处理用户请求: {}", userId);
+
+// 异常发生时记录适当级别的日志
+try {
+    businessLogic.process();
+} catch (BusinessException e) {
+    log.warn("业务处理失败: {}", e.getMessage());
+    throw e;
+} catch (Exception e) {
+    log.error("系统异常: ", e);
+    throw e;
+}
+```
+
+## 🔒 安全考虑
+
+- ❌ **生产环境禁用堆栈信息**：防止泄露系统内部实现细节
+- ❌ **敏感信息过滤**：错误响应中不包含数据库连接、密码等敏感信息
+- ❌ **错误码设计**：避免通过错误码推测系统架构
+- ✅ **详细日志记录**：服务器端记录完整异常信息用于排查
+
+## 📝 版本历史
+
+### v1.0.0 (2024-01-01)
+- ✅ 初始版本发布
+- ✅ 支持基本异常处理功能
+- ✅ 提供统一错误响应格式
+- ✅ 实现自动配置机制
+- ✅ 内置常见异常类型
+- ✅ 支持配置化管理
+- ✅ 多环境配置支持
+
+## 🤝 贡献指南
+
+欢迎提交Issue和Pull Request来改进这个项目！
+
+### 开发环境要求
 - Java 8+
-- Spring Boot 2.0+
+- Maven 3.6+
+- Spring Boot 3.3.4+
 
-## 许可证
+### 构建项目
+```bash
+mvn clean install
+```
+
+### 运行测试
+```bash
+mvn test
+```
+
+## 📄 许可证
 
 MIT License
+
+## 🔧 技术支持
+
+如有问题，请提交Issue或联系维护者。
+
+---
+
+<p align="center">Made with ❤️ for Spring Boot developers</p>
